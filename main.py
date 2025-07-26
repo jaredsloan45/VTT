@@ -1,9 +1,10 @@
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QPushButton, QListWidget, QFileDialog, QGraphicsView, QGraphicsScene
+    QLabel, QPushButton, QListWidget, QFileDialog, QGraphicsView, QGraphicsScene, QDialog
 )
 from PyQt5.QtGui import QIcon
+from CharacterForm import CharacterFormDialog
 
 class VTTMainWindow(QMainWindow):
     def __init__(self):
@@ -11,6 +12,7 @@ class VTTMainWindow(QMainWindow):
         self.setWindowTitle("Virtual Tabletop")
         self.setGeometry(100, 100, 1000, 700)
         self.init_ui()
+        self.w = None
 
     def init_ui(self):
         # Central widget
@@ -46,7 +48,11 @@ class VTTMainWindow(QMainWindow):
 
     def add_character(self):
         # Simple placeholder for adding a character
-        self.char_list.addItem("New Character")
+        dialog = CharacterFormDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            char_name = dialog.name_input.text()
+            if char_name:
+                self.char_list.addItem("New Character")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
