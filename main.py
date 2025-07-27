@@ -10,6 +10,7 @@ from Characters import Character, Enemy
 from EnemyForm import EnemyFormDialog
 from MapGrid import TokenItem
 import Dice_Functions as dice
+from AttackWindow import token_double_clicked
 
 class VTTMainWindow(QMainWindow):
     def __init__(self):
@@ -136,9 +137,11 @@ class VTTMainWindow(QMainWindow):
     def add_icon_to_map(self, icon_path, name, x=0, y=0):
         if icon_path:
             pixmap = QPixmap(icon_path).scaled(48, 48)  # Adjust size as needed
-            token = TokenItem(pixmap, name, grid_size=48)
+            token = TokenItem(pixmap, name, grid_size=48, 
+                              on_double_click= lambda token_item: token_double_clicked(token_item, self))
             token.setPos(x, y)
             self.scene.addItem(token)
+
     
     def draw_grid(self, state = None, grid_size=48, width=600, height=600):
         for line in getattr(self, "grid_lines", []):
