@@ -19,6 +19,9 @@ def roll_stat():
     stat = sum(stat_rolls)-min(stat_rolls)
     return stat
 
-
-
-print(roll_stat())
+def roll_stats():
+    #rolls 6 stats
+    stats = []
+    for i in range(6):
+        stats.append(roll_stat())
+    return stats
