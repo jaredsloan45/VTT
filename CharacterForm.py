@@ -42,6 +42,14 @@ class CharacterFormDialog(QDialog):
         hitpoints_layout.addWidget(self.hit_points_input)
         layout.addLayout(hitpoints_layout)
 
+        self.armor_class_label = QLabel("Armor Class:")
+        self.armor_class_input = QSpinBox()
+
+        armor_class_layout = QHBoxLayout()
+        armor_class_layout.addWidget(self.armor_class_label)
+        armor_class_layout.addWidget(self.armor_class_input)
+        layout.addLayout(armor_class_layout)
+
         self.character_stats_choice_label = QLabel("How would you like to choose your stats?")
         self.character_stats_input = QComboBox()
         self.character_stats_input.addItems(["Select", "Roll Stats", "Point Buy", "Standard Array"])
@@ -81,6 +89,32 @@ class CharacterFormDialog(QDialog):
             hbox.addWidget(spinbox)
             layout.addLayout(hbox)
 
+        #Attacks
+        self.attacks = []
+        for i in range(1, 4):
+            self.attacks_label = QLabel(f"Attack {i}:")
+            self.attack_label = QLabel("Attack Name:")
+            self.attack_input = QLineEdit()
+            self.attack_damage_label = QLabel("Damage:")
+            self.attack_damage_input = QSpinBox()
+            self.attack_damage_dice = QComboBox()
+            self.attack_damage_dice.addItems(["d4", "d6", "d8", "d10", "d12"])
+
+            layout.addWidget(self.attacks_label)
+            attack_layout = QHBoxLayout()
+            attack_layout.addWidget(self.attack_label)
+            attack_layout.addWidget(self.attack_input)
+            attack_layout.addWidget(self.attack_damage_label)
+            attack_layout.addWidget(self.attack_damage_input)
+            attack_layout.addWidget(self.attack_damage_dice)
+            layout.addLayout(attack_layout)
+
+            self.attacks.append({
+                "name_input": self.attack_input,
+                "damage_input": self.attack_damage_input,
+                "damage_dice": self.attack_damage_dice
+            })
+
         self.icon_path = None
         self.icon_btn = QPushButton("Choose Icon")
         self.icon_btn.clicked.connect(self.choose_icon)
@@ -112,6 +146,16 @@ class CharacterFormDialog(QDialog):
 
     def get_stats_dict(self):
         return {name: spinbox.value() for name, label, spinbox in self.stat_fields}
+    
+    def get_attacks(self):
+        attacks = []
+        for attack in self.attacks:
+            name = attack["name_input"].text()
+            damage = attack["damage_input"].value()
+            dice = attack["damage_dice"].currentText()
+            if name:  # Only include attacks with a name
+                attacks.append({"name": name, "damage": damage, "dice": dice})
+        return attacks
 
     def choose_icon(self):
         file_path, _ = QFileDialog.getOpenFileName(self, "Choose Icon", "", "Images (*.png *.jpg *.jpeg *.bmp)")

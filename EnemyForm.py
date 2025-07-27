@@ -34,6 +34,14 @@ class EnemyFormDialog(QDialog):
         hitpoints_layout.addWidget(self.hit_points_input)
         layout.addLayout(hitpoints_layout)
 
+        self.armor_class_label = QLabel("Armor Class:")
+        self.armor_class_input = QSpinBox()
+
+        armor_class_layout = QHBoxLayout()
+        armor_class_layout.addWidget(self.armor_class_label)
+        armor_class_layout.addWidget(self.armor_class_input)
+        layout.addLayout(armor_class_layout)
+
         self.character_stats_choice_label = QLabel("Please enter the stats list:")
 
         layout.addWidget(self.character_stats_choice_label)

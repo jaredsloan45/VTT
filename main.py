@@ -99,10 +99,12 @@ class VTTMainWindow(QMainWindow):
             char_class = dialog.character_class_input.currentText()
             char_race = dialog.character_race_input.currentText()
             char_hp = dialog.hit_points_input.value()
+            char_ac = dialog.armor_class_input.value()
+            char_attacks = dialog.get_attacks()
             char_stats = dialog.get_stats_dict()
             icon_path = dialog.icon_path
             if char_name:
-                character = Character(char_name, char_race, char_class, char_hp, char_stats, icon_path)
+                character = Character(char_name, char_race, char_class, char_hp, char_ac, char_stats, char_attacks, icon_path)
                 self.characters[char_name] = character
                 display_text = f"{char_name} ({char_class})"
                 item = QListWidgetItem(display_text)
@@ -118,10 +120,11 @@ class VTTMainWindow(QMainWindow):
             enemy_race = dialog.enemy_race_input.text()
             enemy_stats = dialog.get_stats_dict()
             enemy_hp = dialog.hit_points_input.value()
+            enemy_ac = dialog.armor_class_input.value()
             enemy_attacks = dialog.get_attacks()
             icon_path = dialog.icon_path
             if enemy_name:
-                enemy = Enemy(enemy_name, enemy_race, enemy_stats, enemy_hp, enemy_attacks, icon_path)
+                enemy = Enemy(enemy_name, enemy_race, enemy_stats, enemy_hp, enemy_ac, enemy_attacks, icon_path)
                 self.enemies[enemy_name] = enemy
                 display_text = enemy_name
                 item = QListWidgetItem(display_text)
