@@ -34,6 +34,14 @@ class CharacterFormDialog(QDialog):
         layout.addWidget(self.character_race_label)
         layout.addWidget(self.character_race_input)
 
+        self.hit_points_label = QLabel("Hit Points:")
+        self.hit_points_input = QSpinBox()
+
+        hitpoints_layout = QHBoxLayout()
+        hitpoints_layout.addWidget(self.hit_points_label)
+        hitpoints_layout.addWidget(self.hit_points_input)
+        layout.addLayout(hitpoints_layout)
+
         self.character_stats_choice_label = QLabel("How would you like to choose your stats?")
         self.character_stats_input = QComboBox()
         self.character_stats_input.addItems(["Select", "Roll Stats", "Point Buy", "Standard Array"])
@@ -73,6 +81,11 @@ class CharacterFormDialog(QDialog):
             hbox.addWidget(spinbox)
             layout.addLayout(hbox)
 
+        self.icon_path = None
+        self.icon_btn = QPushButton("Choose Icon")
+        self.icon_btn.clicked.connect(self.choose_icon)
+        layout.addWidget(self.icon_btn)
+
         # Add OK and Cancel buttons
         button_layout = QHBoxLayout()
         self.ok_button = QPushButton("OK")
@@ -99,3 +112,9 @@ class CharacterFormDialog(QDialog):
 
     def get_stats_dict(self):
         return {name: spinbox.value() for name, label, spinbox in self.stat_fields}
+
+    def choose_icon(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Choose Icon", "", "Images (*.png *.jpg *.jpeg *.bmp)")
+        if file_path:
+            self.icon_path = file_path
+            self.icon_btn.setText(f"Icon: {file_path.split('/')[-1]}")

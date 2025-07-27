@@ -26,6 +26,11 @@ class EnemyFormDialog(QDialog):
         layout.addWidget(self.enemy_race_label)
         layout.addWidget(self.enemy_race_input)
 
+        hitpoints_layout = QHBoxLayout()
+        hitpoints_layout.addWidget(self.hit_points_label)
+        hitpoints_layout.addWidget(self.hit_points_input)
+        layout.addLayout(hitpoints_layout)
+
         self.character_stats_choice_label = QLabel("Please enter the stats list:")
 
         layout.addWidget(self.character_stats_choice_label)
@@ -59,22 +64,35 @@ class EnemyFormDialog(QDialog):
             layout.addLayout(hbox)
 
         #Attacks
-        self.attacks_label = QLabel("Attack 1:")
-        self.attack1_label = QLabel("Attack Name:")
-        self.attack1_input = QLineEdit()
-        self.attack1_damage_label = QLabel("Damage:")
-        self.attack1_damage_input = QSpinBox()
-        self.attack1_damage_dice = QComboBox()
-        self.attack1_damage_dice.addItems(["d4", "d6", "d8", "d10", "d12"])
+        self.attacks = []
+        for i in range(1, 4):
+            self.attacks_label = QLabel(f"Attack {i}:")
+            self.attack_label = QLabel("Attack Name:")
+            self.attack_input = QLineEdit()
+            self.attack_damage_label = QLabel("Damage:")
+            self.attack_damage_input = QSpinBox()
+            self.attack_damage_dice = QComboBox()
+            self.attack_damage_dice.addItems(["d4", "d6", "d8", "d10", "d12"])
 
-        layout.addWidget(self.attacks_label)
-        attack1_layout = QHBoxLayout()
-        attack1_layout.addWidget(self.attack1_label)
-        attack1_layout.addWidget(self.attack1_input)
-        attack1_layout.addWidget(self.attack1_damage_label)
-        attack1_layout.addWidget(self.attack1_damage_input)
-        attack1_layout.addWidget(self.attack1_damage_dice)
-        layout.addLayout(attack1_layout)
+            layout.addWidget(self.attacks_label)
+            attack_layout = QHBoxLayout()
+            attack_layout.addWidget(self.attack_label)
+            attack_layout.addWidget(self.attack_input)
+            attack_layout.addWidget(self.attack_damage_label)
+            attack_layout.addWidget(self.attack_damage_input)
+            attack_layout.addWidget(self.attack_damage_dice)
+            layout.addLayout(attack_layout)
+
+            self.attacks.append({
+                "name_input": self.attack_input,
+                "damage_input": self.attack_damage_input,
+                "damage_dice": self.attack_damage_dice
+            })
+
+        self.icon_path = None
+        self.icon_btn = QPushButton("Choose Icon")
+        self.icon_btn.clicked.connect(self.choose_icon)
+        layout.addWidget(self.icon_btn)
 
         # Add OK and Cancel buttons
         button_layout = QHBoxLayout()
@@ -90,3 +108,13 @@ class EnemyFormDialog(QDialog):
 
     def get_stats_dict(self):
         return {name: spinbox.value() for name, label, spinbox in self.stat_fields}
+
+    def get_attacks(self):
+        attacks = []
+        for attack in self.attacks:
+            name = attack["name_input"].text()
+            damage = attack["damage_input"].value()
+            dice = attack["damage_dice"].currentText()
+            if name:  # Only include attacks with a name
+                attacks.append({"name": name, "damage": damage, "dice": dice})
+        return attacks
