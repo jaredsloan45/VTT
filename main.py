@@ -13,6 +13,38 @@ import Dice_Functions as dice
 from AttackWindow import token_double_clicked
 
 class VTTMainWindow(QMainWindow):
+    def attack(self, attacker_name, enemy_name, attack_name):
+        # Get enemy object
+        enemy = self.enemies.get(enemy_name)
+        if not enemy:
+            self.show_message(f"Enemy '{enemy_name}' not found.")
+            return
+        # Roll a d20
+        import random
+        roll = random.randint(1, 20)
+        ac = getattr(enemy, 'armor_class', None)
+        if ac is None:
+            ac = getattr(enemy, 'ac', None)
+        hit = False
+        if ac is not None:
+            hit = roll >= ac
+        msg = f"Attack roll: {roll}\nEnemy AC: {ac if ac is not None else 'N/A'}\n"
+        if ac is not None:
+            msg += "Hit!" if hit else "Miss!"
+        else:
+            msg += "(Could not determine enemy AC)"
+        self.show_message(msg)
+
+    def show_message(self, text):
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Attack Result")
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel(text))
+        ok_btn = QPushButton("OK")
+        ok_btn.clicked.connect(dlg.accept)
+        layout.addWidget(ok_btn)
+        dlg.setLayout(layout)
+        dlg.exec_()
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Virtual Tabletop")
