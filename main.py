@@ -3,10 +3,11 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QPushButton, QListWidget, QFileDialog, QGraphicsView, QGraphicsScene, QDialog, QListWidgetItem
 )
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from CharacterForm import CharacterFormDialog
 from Characters import Character, Enemy
 from EnemyForm import EnemyFormDialog
+from MapGrid import TokenItem
 
 class VTTMainWindow(QMainWindow):
     def __init__(self):
@@ -74,6 +75,7 @@ class VTTMainWindow(QMainWindow):
                 item = QListWidgetItem(display_text)
                 if icon_path:
                     item.setIcon(QIcon(icon_path))
+                    self.add_icon_to_map(icon_path, char_name)
                 self.char_list.addItem(item)
     
     def add_enemy(self):
@@ -84,10 +86,24 @@ class VTTMainWindow(QMainWindow):
             enemy_stats = dialog.get_stats_dict()
             enemy_hp = dialog.hit_points_input.value()
             enemy_attacks = dialog.get_attacks()
+            icon_path = dialog.icon_path
             if enemy_name:
-                enemy = Enemy(enemy_name, enemy_race, enemy_stats, enemy_hp, enemy_attacks)
+                enemy = Enemy(enemy_name, enemy_race, enemy_stats, enemy_hp, enemy_attacks, icon_path)
                 self.enemies[enemy_name] = enemy
-                self.enemy_list.addItem(enemy_name)
+                display_text = enemy_name
+                item = QListWidgetItem(display_text)
+                if icon_path:
+                    item.setIcon(QIcon(icon_path))
+                    self.add_icon_to_map(icon_path, enemy_name, x=60, y=0)
+                self.enemy_list.addItem(item)
+
+    def add_icon_to_map(self, icon_path, name, x=0, y=0):
+        if icon_path:
+            pixmap = QPixmap(icon_path).scaled(48, 48)  # Adjust size as needed
+            token = TokenItem(pixmap, name, grid_size=48)
+            token.setPos(x, y)
+            self.scene.addPixmap(pixmap)
+
                 
 
 if __name__ == "__main__":

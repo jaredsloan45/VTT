@@ -26,6 +26,9 @@ class EnemyFormDialog(QDialog):
         layout.addWidget(self.enemy_race_label)
         layout.addWidget(self.enemy_race_input)
 
+        self.hit_points_label = QLabel("Hit Points:")
+        self.hit_points_input = QSpinBox()
+
         hitpoints_layout = QHBoxLayout()
         hitpoints_layout.addWidget(self.hit_points_label)
         hitpoints_layout.addWidget(self.hit_points_input)
@@ -118,3 +121,9 @@ class EnemyFormDialog(QDialog):
             if name:  # Only include attacks with a name
                 attacks.append({"name": name, "damage": damage, "dice": dice})
         return attacks
+    
+    def choose_icon(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Choose Icon", "", "Images (*.png *.jpg *.jpeg *.bmp)")
+        if file_path:
+            self.icon_path = file_path
+            self.icon_btn.setText(f"Icon: {file_path.split('/')[-1]}")
