@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIcon
 from CharacterForm import CharacterFormDialog
+from Characters import Character
+from EnemyForm import EnemyFormDialog
 
 class VTTMainWindow(QMainWindow):
     def __init__(self):
@@ -13,6 +15,7 @@ class VTTMainWindow(QMainWindow):
         self.setGeometry(100, 100, 1000, 700)
         self.init_ui()
         self.w = None
+        self.characters = {}
 
     def init_ui(self):
         # Central widget
@@ -29,9 +32,13 @@ class VTTMainWindow(QMainWindow):
         add_char_btn = QPushButton("Add Character")
         add_char_btn.clicked.connect(self.add_character)
 
+        add_enemy_btn = QPushButton("Add Enemy")
+        add_enemy_btn.clicked.connect(self.add_enemy)
+
         sidebar_layout.addWidget(QLabel("Characters"))
         sidebar_layout.addWidget(self.char_list)
         sidebar_layout.addWidget(add_char_btn)
+        sidebar_layout.addWidget(add_enemy_btn)
         sidebar_layout.addStretch()
 
         # Map area: Placeholder using QGraphicsView
@@ -51,8 +58,23 @@ class VTTMainWindow(QMainWindow):
         dialog = CharacterFormDialog(self)
         if dialog.exec_() == QDialog.Accepted:
             char_name = dialog.name_input.text()
+            char_class = dialog.character_class_input.currentText()
+            char_race = dialog.character_race_input.currentText()
+            char_stats = dialog.get_stats_dict()
             if char_name:
-                self.char_list.addItem("New Character")
+                character = Character(char_name, char_race, char_class, char_stats)
+                self.characters[char_name] = character
+                display_text = f"{char_name} ({char_class})"
+                self.char_list.addItem(display_text)
+    
+    def add_enemy(self):
+        dialog = EnemyFormDialog(self)
+        if dialog.exec() == QDialog.Accepted:
+            enemy_name = dialog.name_input.text()
+            enemy_race = dialog.enemy_race_input.text()
+            enemy_stats = dialog.get_stats_dict()
+            if enemy_name:
+               pass 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
